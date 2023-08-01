@@ -1,0 +1,30 @@
+<h2>Expense Tracker</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Expense</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let expense of expenses">
+      <td>{{ expense.name }}</td>
+      <td>{{ expense.expense }}</td>
+    </tr>
+  </tbody>
+</table>
+<div [formGroup]="newExpenseForm">
+  <input type="text" placeholder="Name" formControlName="name">
+  <div *ngIf="newExpenseForm.controls['name'].invalid && (newExpenseForm.controls['name'].dirty || newExpenseForm.controls['name'].touched)">
+    <small class="text-danger" *ngIf="newExpenseForm.controls['name'].hasError('required')">Name is required.</small>
+  </div>
+  <input type="number" placeholder="Expense" formControlName="expense">
+  <div *ngIf="newExpenseForm.controls['expense'].invalid && (newExpenseForm.controls['expense'].dirty || newExpenseForm.controls['expense'].touched)">
+    <small class="text-danger" *ngIf="newExpenseForm.controls['expense'].hasError('required')">Expense is required.</small>
+    <small class="text-danger" *ngIf="newExpenseForm.controls['expense'].hasError('min')">Expense must be greater than or equal to 0.</small>
+  </div>
+  <button (click)="addExpense()">Add Expense</button>
+</div>
+<div>
+  <button (click)="settleUp()">Settle Up</button>
+</div>
