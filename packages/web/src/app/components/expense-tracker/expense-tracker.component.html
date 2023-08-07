@@ -1,30 +1,64 @@
-<h2>Expense Tracker</h2>
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Expense</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let expense of expenses">
-      <td>{{ expense.name }}</td>
-      <td>{{ expense.expense }}</td>
-    </tr>
-  </tbody>
-</table>
-<div [formGroup]="newExpenseForm">
-  <input type="text" placeholder="Name" formControlName="name">
-  <div *ngIf="newExpenseForm.controls['name'].invalid && (newExpenseForm.controls['name'].dirty || newExpenseForm.controls['name'].touched)">
-    <small class="text-danger" *ngIf="newExpenseForm.controls['name'].hasError('required')">Name is required.</small>
+<div class="flex justify-center min-h-screen">
+  <div class="p-6 rounded-lg w-2/3">
+    <h2 class="text-2xl font-semibold mb-4">Expense Tracker</h2>
+    <table class="min-w-full text-left text-sm font-light" *ngIf="expenses && expenses.length > 0">
+      <thead class="border-b font-medium dark:border-neutral-500">
+        <tr>
+          <th scope="col" class="px-6 py-4">#</th>
+          <th scope="col" class="px-6 py-4">Name</th>
+          <th scope="col" class="px-6 py-4">Expense</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let expense of expenses; let index = index" class="border-b dark:border-neutral-500">
+          <td class="whitespace-nowrap px-6 py-4 font-medium">{{ index + 1 }}</td>
+          <td class="whitespace-nowrap px-6 py-4">{{ expense.name }}</td>
+          <td class="whitespace-nowrap px-6 py-4">{{ expense.amount }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div [formGroup]="newExpenseForm" class="py-4 bg-white grid grid-cols-1 md:grid-cols-3 gap-2">
+      <div>
+        <input type="text" placeholder="Name" formControlName="name" class="w-full p-2 mb-2 border rounded focus:outline-none focus:ring-blue-400">
+        <div *ngIf="newExpenseForm.controls['name'].invalid && (newExpenseForm.controls['name'].dirty || newExpenseForm.controls['name'].touched)">
+          <small class="text-red-500" *ngIf="newExpenseForm.controls['name'].hasError('required')">Name is required.</small>
+        </div>
+      </div>
+      <div>
+        <input type="number" placeholder="Expense" formControlName="amount" class="w-full p-2 mb-2 border rounded focus:outline-none focus:ring-blue-400">
+        <div *ngIf="newExpenseForm.controls['amount'].invalid && (newExpenseForm.controls['amount'].dirty || newExpenseForm.controls['amount'].touched)">
+          <small class="text-red-500" *ngIf="newExpenseForm.controls['amount'].hasError('required')">Expense is required.</small>
+          <small class="text-red-500" *ngIf="newExpenseForm.controls['amount'].hasError('min')">Expense must be greater than or equal to 0.</small>
+        </div>
+      </div>
+      <div>
+        <button
+          (click)="addExpense()"
+          class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-400"
+          [class.opacity-50.cursor-not-allowed]="newExpenseForm.invalid"
+          [disabled]="newExpenseForm.invalid"
+        >Add Expense</button>
+      </div>
+    </div>
+    <div *ngIf="response" class="mb-4">
+      <div>Total: {{response.total}}</div>
+      <div>Equal Share: {{response.equalShare}}</div>
+      <div>
+        <div class="mt-2">Payouts:</div>
+        <div *ngFor="let payout of response.payouts" class="pl-4">
+          <div>Owes: {{payout.owes}}</div>
+          <div>Owed: {{payout.owed}}</div>
+          <div>Amount: {{payout.amount}}</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <button
+        (click)="settleUp()"
+        class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-400"
+        [class.opacity-50.cursor-not-allowed]="expenses.length === 0"
+        [disabled]="expenses.length === 0"
+      >Settle Up</button>
+    </div>
   </div>
-  <input type="number" placeholder="Expense" formControlName="expense">
-  <div *ngIf="newExpenseForm.controls['expense'].invalid && (newExpenseForm.controls['expense'].dirty || newExpenseForm.controls['expense'].touched)">
-    <small class="text-danger" *ngIf="newExpenseForm.controls['expense'].hasError('required')">Expense is required.</small>
-    <small class="text-danger" *ngIf="newExpenseForm.controls['expense'].hasError('min')">Expense must be greater than or equal to 0.</small>
-  </div>
-  <button (click)="addExpense()">Add Expense</button>
-</div>
-<div>
-  <button (click)="settleUp()">Settle Up</button>
 </div>
